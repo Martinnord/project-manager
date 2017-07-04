@@ -5,7 +5,8 @@
 
 import React, { Component } from 'react';
 import Projects from './Components/Projects' // Importing the files from projects
-import './App.css';
+import AddProject from './Components/AddProject' // Importing the files from projects
+import uuid from 'uuid'
 
 class App extends Component {
 
@@ -13,21 +14,43 @@ class App extends Component {
   constructor() {
     super()
     this.state = {
-      projects: [
-        {
-          title: "Bussnies Website",
-          category: "Web Design"
-        },
-        {
-          title: "Social App",
-          category: "Mobile Development"
-        },
-        {
-          title: "Ecommerce Shopping Chart",
-          category: "Web Development"
-        }
-      ]
+      projects: []
     }
+  }
+
+  // Lifecyclemethod - fires of everytime when the component is re-renderd
+  componentWillMount() {
+    this.setState({projects: [
+      {
+        id: uuid.v4(),
+        title: "Bussnies Website",
+        category: "Web Design"
+      },
+      {
+        id: uuid.v4(),
+        title: "Social App",
+        category: "Mobile Development"
+      },
+      {
+        id: uuid.v4(),
+        title: "Ecommerce Shopping Chart",
+        category: "Web Development"
+      }
+    ]})
+  }
+
+  handleAddProject(project) {
+    // Will grab whats already there and push it
+    const projects = this.state.projects
+    projects.push(project)
+    this.setState({projects:projects}) // Reset it
+  }
+
+  handleDeleteProject(id) {
+    const projects = this.state.projects
+    const index = projects.findIndex(x => x.id === id) // Finds all the ids and then match them to the current id thats being passed in
+    projects.splice(index, 1)
+    this.setState({projects:projects})
   }
 
   render() {
@@ -35,9 +58,8 @@ class App extends Component {
       // Has to be within ONE element when inside of render
       // Use this as a placeholder for all of the other components
       <div className="App">
-        My App
-
-      <Projects projects={this.state.projects}/>
+        <AddProject addProject={this.handleAddProject.bind(this)}/>
+        <Projects projects={this.state.projects} onDelte={this.handleDeleteProject.bind(this)}/>
       </div>
 
     );
